@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd">
+                               <!--定义切点-->
+    <bean id="dao"  class="Aop.XmlExample.dao.daoImpl.UserDaoImpl"></bean>
+    <bean id="service" class="Aop.XmlExample.service.Impl.UserServiceImpl">
+        <property name="dao" ref="dao"></property>
+    </bean>
+    <aop:config>
+        <!--定义一个切入点表达式，并命名为“pointcut”-->
+        <!--expression是切入点指示符，()中是切入点表达式-->
+        <aop:pointcut id="pointcut" expression="execution(public void print(Aop.XmlExample.entity.User))"/>
+    </aop:config>
+
+
+    <!--各个增强的地址  id是名字 class是地址-->
+    <bean id="theLgger" class="Aop.XmlExample.xml.theLogger.UserServiceLogger"></bean>
+    <bean id="after-Throwing" class="Aop.XmlExample.xml.ErrorLogger.ErrorLogger"></bean>
+    <bean id="After" class="Aop.XmlExample.xml.AfterLogger.AfterLogger"></bean>
+    <bean id="Around" class="Aop.XmlExample.xml.AroundLogger.AroundLogger"></bean>
+
+
+ <!--前置后置增强-->
+    <aop:config>
+    <!--引用包含增强方法的bean-->
+<aop:aspect ref="theLgger">
+    <!--将before()方法定义为前置增强并引用pointcut切点-->
+    <aop:before method="before" pointcut-ref="pointcut"></aop:before>
+        <!--将afterReturning()方法定义为后置增强 也就是 并引用pointcut切入点-->
+        <!--通过returning属性指定为名为result的参数注入返回值-->
+    <aop:after-returning method="afterReturning" pointcut-ref="pointcut" returning="result"/>
+</aop:aspect>
+    </aop:config>
+
+
+<!--afterThrowingy异常抛出增强-->
+    <aop:config>
+        <!--定义切入点-->
+        <aop:pointcut id="pointcut" expression="execution(* Aop.XmlExample.service.UserService.*(..))"/>
+            <!--引用包含增强方法的bean-->
+            <aop:aspect ref="after-Throwing">
+                <!--将afterThrowing()定义为异常抛出增强并引用pointcut 切入点-->
+                <!--通过throwing属性指定为名e的参数注入异常实例-->
+                <aop:after-throwing method="afterThrowing" pointcut-ref="pointcut" throwing="e"></aop:after-throwing>
+            </aop:aspect>
+    </aop:config>
+
+
+<!--最终增强-->
+    <aop:config>
+        <!--定义切点-->
+        <aop:pointcut id="pointcut" expression="execution(* Aop.XmlExample.service.UserService.*(..))"/>
+        <aop:aspect ref="After">
+            <aop:after method="afterLogger" pointcut-ref="pointcut" />
+        </aop:aspect>
+    </aop:config>
+
+
+
+    <!--环绕增强-->
+    <aop:config>
+        <aop:pointcut id="pointcut" expression="execution(* Aop.XmlExample.service.UserService.*(..))"/>
+        <aop:aspect ref="Around">
+            <aop:around method="AroundLogger" pointcut-ref="pointcut"/>
+        </aop:aspect>
+    </aop:config>
+
+
+
+
+
+    <!--advice-->
+    <!--通知-->
+    <bean id="testAdvice" class="Aop.Advice.Testadvice"/>
+    <bean id="aopserivceTarget" class="Aop.XmlExample.service.AopService"/>
+    <bean id="aopSerivce" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <!--配置通知-->
+        <property name="interceptorNames">
+            <list>
+                <value>testAdvice</value>
+            </list>
+        </property>
+        <!--目标-->
+        <property name="targetName" value="aopserivceTarget"/>
+    </bean>
+
+
+
+
+</beans>
