@@ -26,5 +26,7 @@
     <orderEntry type="library" scope="PROVIDED" name="Tomcat 8.0.456" level="application_server_libraries" />
     <orderEntry type="library" name="spring-lib" level="project" />
     <orderEntry type="library" name="commons-fileupload-1.2.2" level="project" />
+    <orderEntry type="library" name="Spring_Mvc" level="project" />
+    <orderEntry type="library" name="mybatis-generator-core-1.3.2" level="project" />
   </component>
 </module>
