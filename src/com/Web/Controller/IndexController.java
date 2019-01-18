@@ -31,7 +31,7 @@ public class IndexController{
     public  String login(){
         return "login";
     }
-    @PostMapping("/errorlogin")
+    @RequestMapping("/errorlogin")
     public  String login1(){
         return "login";
     }

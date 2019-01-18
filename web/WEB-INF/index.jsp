@@ -14,12 +14,13 @@
 Hello com
 <form action="/upload" method="post" enctype="multipart/form-data">
     <input type="file" name="file">
-    <input  type="submit" value="文件上传">
+    <input type="submit" value="文件上传">
+
 </form>
 <h1>admin</h1>
 <h1>tomcat</h1>
 <h1>user</h1>
-<script src="/static/js/index.js"></script>
+<script src="/static /js/index.js"></script>
 ${success}
 </body>
 </html>

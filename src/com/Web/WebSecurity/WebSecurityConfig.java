@@ -1,7 +1,10 @@
 package com.Web.WebSecurity;
 
+import com.Web.filter.filter;
+import com.app.service.UserService1;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AccountStatusException;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -10,12 +13,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.ForwardAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.ForwardAuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -24,9 +26,42 @@ import java.io.IOException;
 
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+
+    @Autowired
+    UserService1  userService1;
+
+    /**
+     * 密码编码器
+     * encode：编码
+     * matches：匹配的方法
+     * @return
+     */
+    @Bean
+    PasswordEncoder passwordEncoder(){
+        return  new PasswordEncoder() {
+            @Override
+            public String encode(CharSequence rawPassword) {
+                return rawPassword.toString();
+            }
+
+            /**
+             *
+             * @param rawPassword：密码框的输入
+             * @param encodedPassword：数据库的表字段的值
+             * @return
+             */
+            @Override
+            public boolean matches(CharSequence rawPassword, String encodedPassword) {
+                return rawPassword.equals(encodedPassword);
+            }
+        };
+    }
+
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        //构建一个用户名为admin 密码123 角色admin  withDefaultPasswordEncoder：使用默认密码的编码器
+/*        //构建一个用户名为admin 密码123 角色admin  withDefaultPasswordEncoder：使用默认密码的编码器
 
         UserDetails admin = User.withDefaultPasswordEncoder().username("admin").password("123").authorities("ADMIN").build();
         UserDetails tomcat = User.withDefaultPasswordEncoder().username("tomcat").password("123").authorities("TOMCAT").build();
@@ -34,14 +69,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         //在内容当中保存一个用户
         auth.inMemoryAuthentication().withUser(admin);
         auth.inMemoryAuthentication().withUser(tomcat);
-        auth.inMemoryAuthentication().withUser(user);
+        auth.inMemoryAuthentication().withUser(user);*/
+   auth.userDetailsService(userService1);
 
     }
 
+    /**
+     * 典型的过滤：FilterComparator：
+     * @param web
+     * @throws Exception
+     */
     @Override
     public void configure(WebSecurity web) throws Exception {
         super.configure(web);
     }
+
 
     /**
      * http安全性
@@ -75,8 +117,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
               .and().authorizeRequests().antMatchers("/Toindex1").permitAll();*/
       http.authorizeRequests().anyRequest().authenticated()
                 .and().authorizeRequests().antMatchers("/static/**").permitAll()
-                .and().authorizeRequests().antMatchers("/admin/**").hasRole("ADMIN")
-                .and().formLogin().loginPage("/login").successForwardUrl("/Toindex1").usernameParameter("userName").passwordParameter("userPassword").failureHandler(new ForwardAuthenticationFailureHandler("/errorlogin"){
+                    .and().authorizeRequests().antMatchers("/admin/**").hasRole("ADMIN")
+                .and().formLogin().loginPage("/login").successForwardUrl("/admin/Toadmin").usernameParameter("userName").passwordParameter("userPassword").failureHandler(new ForwardAuthenticationFailureHandler("/errorlogin"){
           @Override
           public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
               if (exception instanceof BadCredentialsException){
@@ -95,6 +137,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             super.onAuthenticationSuccess(httpServletRequest,httpServletResponse,authentication);
           }
       }).permitAll();
+      http.addFilterBefore(new filter(), UsernamePasswordAuthenticationFilter.class);
+     /* http.addFilterBefore(new filter(),CsrfFilter.class);*/
     }
      /*   http.authorizeRequests().antMatchers("Toindex1","/static/**").permitAll().antMatchers("/admin/**").access("hasRole('ADMIN')").anyRequest().authenticated().and().formLogin().permitAll();
 */

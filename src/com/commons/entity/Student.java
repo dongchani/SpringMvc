@@ -1,23 +1,55 @@
 package com.commons.entity;
 
-import lombok.Data;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
+import java.util.Date;
 
-import java.sql.Timestamp;
-import java.util.Collection;
+public class Student {
+    private Integer id;
 
-@Data
-public class Student extends User {
-  public Student(String username, String password, Collection <? extends GrantedAuthority> authorities) {
-    super(username, password, authorities);
-  }
+    private String stuname;
 
-  private int id;
-  private String stuName;
-  private String password;
-  private Timestamp joinTime;
-  private int clzId;
+    private String password;
 
+    private Date jointime;
 
+    private Integer clzId;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getStuname() {
+        return stuname;
+    }
+
+    public void setStuname(String stuname) {
+        this.stuname = stuname == null ? null : stuname.trim();
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password == null ? null : password.trim();
+    }
+
+    public Date getJointime() {
+        return jointime;
+    }
+
+    public void setJointime(Date jointime) {
+        this.jointime = jointime;
+    }
+
+    public Integer getClzId() {
+        return clzId;
+    }
+
+    public void setClzId(Integer clzId) {
+        this.clzId = clzId;
+    }
 }

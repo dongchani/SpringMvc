@@ -44,6 +44,7 @@ import java.util.concurrent.Executors;
 @EnableWebMvc//开启webMvc的注解
 public class WebConfig   implements WebMvcConfigurer {
 
+
     private  static  final  Integer MB =1024*1024;
     /**
      * 添加自定义异常处理类

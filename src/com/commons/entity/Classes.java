@@ -1,12 +1,23 @@
 package com.commons.entity;
 
-import lombok.Data;
-
-@Data
 public class Classes {
+    private Integer id;
 
-  private int id;
-  private String clzName;
+    private String clzName;
 
+    public Integer getId() {
+        return id;
+    }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getClzName() {
+        return clzName;
+    }
+
+    public void setClzName(String clzName) {
+        this.clzName = clzName == null ? null : clzName.trim();
+    }
 }
