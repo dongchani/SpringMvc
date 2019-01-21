@@ -1,5 +1,5 @@
 package com.commons.entity;
-public class                    TsyRole {
+public class  TsyRole {
     public Integer getId() {
         return id;
     }
@@ -18,4 +18,10 @@ public class                    TsyRole {
 
     private Integer id;
     private String RoleName;
+   public TsyRole(){
+
+    }
+   public TsyRole(Integer id,String RoleName){
+
+    }
 }

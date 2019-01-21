@@ -21,5 +21,7 @@
         upDate smbms_user set userCode=#{userCode},userName=#{userName},userPassword=#{userPassword},gender=#{gender}
         where id=#{id}
             </update>
-
+ <select id="selectAll" parameterType="list">
+     select  * from  tsy_user
+ </select>
 </mapper>

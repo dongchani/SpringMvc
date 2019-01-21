@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!--inline:内嵌的标签样式，能够通过css动态生成样式-->
+    <style th:inline="css">
+      .[[${role.roleName}]]{
+      background-size: 100px;
+      }
+    </style>
+</head>
+    <body>
+    <!--类似el表达式-->
+    <div th:text="${role.roleName}"></div>
+    角色为：
+    <span th:if="${role.roleName}=='ADMIN'">管理员</span>
+
+    <ul>
+        <li th:each="r:${roles}">
+        <span th:text="${r}"></span>
+    </li>
+    </ul>
+    <!--class标签-->
+    <div  th:class="role.roleName">class</div>
+
+
+<!--自定义属性 layui or bootstrap-->
+    <div th:attr="roles=${role.roleName}">attr</div>
+<!--自定义属性-->
+    <div th:attr="roles='${role.roleName}'">attr1</div>
+
+    <!--标签表达式-->
+    <script th:inline="javascript">
+   window.onload=function (ev) {
+       alert('[[${role.roleName}]]')
+   }
+    </script>
+  <!--  @{/css/gtvg.css}引用属性文件-->
+    <p th:text="#{spring.web.upload.maxUpload}">welcome</p>
+    <!--#{}信息表达式-->
+    <div th:text="#{spring.web.upload.maxUpload}"></div>
+    </body>
+</html>
